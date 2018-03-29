@@ -19,3 +19,6 @@ import javax.validation.constraints.Email; //@NOT NULL,@Email,@Size
 @OneToOne(fetch = FetchType.LAZY/EAGER,
             cascade =  CascadeType.ALL,
             mappedBy = "user")
+                
+@OneToMany
+@JoinTable(name="New_TABLE_NAME",columns=@JoinColumn=(name="Current_CLASS_PK COLUM REF"),inverseJoincolumn=@JoinColumn(name="REF_CLASS_PK_COLUMN_NAME"))
