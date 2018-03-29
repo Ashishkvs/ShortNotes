@@ -1,0 +1,439 @@
+Toast
+=======
+Toast.makeText(packageName,"Message",time duration/Toast.Length_short).show();
+//////////another way of doing main;y in fragments
+Toast.makeText(view.getContext(),"Hello there",Toast.LENGTH_SHORT).show();
+
+
+INTENT
+========
+Intent intent=new Intent(packageContext/this,"calling java classs/intent");
+
+startActivity(intent);
+
+finish();//optional or not allw to go back
+
+INTENT  send with some values
+========================
+Intent intent=new Intent(packageContext/this,"calling java classs/intent");
+  
+  intent.putExtra("KEY/phoneNumber",VALUE/phoneNumber);
+
+  startActivity(intent);
+  
+ INTENT receive with values
+ ================================
+   Bundle bundle=getIntent().getExtras();
+    String phoneNumber=bundle.getString("phoneNumber");
+       
+	   TextView textView=(TextView)findViewById(R.id.phoneNumber);
+        textView.setText("Verified Mobile "+phoneNumber);
+
+LISTVIEW
+==========================
+ //listview fetch through its id
+        ListView myListView=findViewById(R.id.myListView);
+
+        //create an arrayList to add al data to a list
+        ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add("Ashish");
+        arrayList.add("Bala");
+        arrayList.add("Rintu");
+        arrayList.add("kumara");
+
+        //create arrayadapter and pass context, layout and arraylist
+        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
+
+        //set listview to arrayAdapter
+        myListView.setAdapter(arrayAdapter);
+
+LISTVIEW 2nd method
+==========================
+	 //listview fetch through its id
+        ListView myListView=findViewById(R.id.myListView);
+	
+	 //create an arrayList to add al data to a list
+        ArrayList<String> arrayList=new ArrayList<>(asList("ashish","bala","rintu","kumara"));
+
+
+        //create arrayadapter and pass context, layout and arraylist
+        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
+
+        //set listview to arrayAdapter
+        myListView.setAdapter(arrayAdapter);
+
+LISTVIEW with onClickItemListener
+=====================================
+  //on itemClickListener
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(),"Hello "+arrayList.get(i).toUpperCase(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+MENU ITEM ::::
+=====================
+go to res folder>>>create menu folder>>>create new MENU RESOURCE FILE  >>>main_menu
+
+open main_menu.xml
+------------
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Settings"
+        android:id="@+id/settings"
+        ></item>
+    <item android:title="help"
+        android:id="@+id/help"
+        ></item>
+</menu>
+
+GO TO MAIN_ACTIVITY.java
+-------------------
+do following changes
+
+ //set menu item visible to action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater=getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    //set action on menu item selected
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+         super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()){
+            case R.id.settings:
+                Log.i("Menu item selected","settings");
+                return  true;
+            case R.id.help:
+                Log.i("Menu item selected","help");
+                return  true;
+                default:
+                    return false;
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_customized_action_bar);
+    }
+
+
+ALERT DIALOG
+====================
+go to mainActivity.java
+ @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_alert_demo);
+
+        //set an alert button
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Are you sure ?")
+                .setMessage("Do you Definitely want to do this ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(),"its done !!",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
+
+
+MAKE CALL
+===============
+   public void phoneCall(View view) {
+        Log.i("info", "conatct clicked");
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + "123456789"));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},1);
+        }
+        else{
+            //make a phone call
+        startActivity(callIntent);
+    }
+
+
+SQLITE db connection
+======================
+try{
+            //create database
+            SQLiteDatabase myDatabase=this.openOrCreateDatabase("Users",MODE_PRIVATE,null);
+
+            //create table
+
+            myDatabase.execSQL("CREATE TABLE IF NOT EXISTS user(name VARCHAR,age INT(3))");
+
+            //insert into user table
+            myDatabase.execSQL("INSERT INTO user(name,age) VALUES('Rob',34)");
+            myDatabase.execSQL("INSERT INTO user(name,age) VALUES('Ashish',25)");
+
+            //get data out of the database
+            Cursor cursor=myDatabase.rawQuery("SELECT * FROM user",null); //to cancel query in b/w null given
+
+            //column index
+            int nameIndex=cursor.getColumnIndex("name");
+            int ageIndex=cursor.getColumnIndex("age");
+
+            cursor.moveToFirst();
+            //keep looping till null
+            while(cursor !=null){
+                Log.i("name", cursor.getString(nameIndex));
+                Log.i("age",Integer.toString(cursor.getInt(ageIndex)));
+                cursor.moveToNext();  //most important
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+
+        }
+    }
+
+NOTE::::::::::::::::::: DELETE FROM USER WHERE NAME='ashish' LIMIT 1  //must add limit 1 in order to effectiv specified no
+
+we cann't add primary key in SQLITE after table has been created
+
+CREATE TABLE IF NOT EXISTS USERS(name varchar,age INTEGER(3),id INTEGER PRIMARY KEY))
+
+WEBVIEW
+=================
+
+        //WebView of Imagegrafia
+
+        WebView webView=findViewById(R.id.web_imagegrafia);
+
+        //enable javascript
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient());
+
+        webView.loadUrl("https://imagegrafia.com/blog/");
+
+        //load  static data from html
+       // webView.loadData("<html><body><h1>Hi therer</h1></body></html>","text/html","UTF-8");
+
+
+CREATE MENU ITEM
+=====================
+androidMainfest.xml
+-------------------------------
+ android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+activity_main.xml
+----------------------------
+<android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+main_menu.xml
+-----------------
+<!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/action_favorite"
+        app:showAsAction="ifRoom"/>
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+
+MainActivity.java
+--------------------------
+	IN onCreate() method
+  //App bar Toolbar
+         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+         setSupportActionBar(myToolbar);
+
+         // Get a support ActionBar corresponding to this toolbar
+         ActionBar ab = getSupportActionBar();
+
+         // Enable the Up button
+         ab.setDisplayHomeAsUpEnabled(true);
+
+//set menu item visible to action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater=getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+ 
+//App bar menu selected
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
+
+            case R.id.action_favorite:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+RECYCLER VIEW WITHH SEARCH
+===================================
+build.gradle
+---------------
+ 	compile 'com.android.support:recyclerview-v7:26.1.0'
+   	 compile 'com.android.support:cardview-v7:26.1.0'
+
+to give ripple effect on click
+=========================================
+ android:background="?android:attr/selectableItemBackground"
+
+activity_mai.xml
+-------------------
+<android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editText"
+        android:layout_marginTop="11dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+recycler_list.xml
+--------------------
+product design 
+
+
+product.java(MODEL CLASS)
+---------------------------
+string name
+int price
+
+...getter & setter & constructor
+
+ProductAdapter.java 
+-----------------------
+then create internal class
+		public class ProductViewHolder extends RecyclerView.ViewHolder{
+			//create all object which required to add in recycler_list.xml
+        //or we want to bind data to xml
+        //ui element in order to bind with layout
+        ImageView imageView;
+        TextView textViewTitle;
+        TextView textViewDesc;
+        TextView textViewRating;
+        TextView textViewPrice;
+        
+	//in order to make all item clickable or any parent layout of above xml
+        RelativeLayout relativeLayout;
+
+        public ProductViewHolder(View itemView) {
+            super(itemView);
+            //initalize al object
+            imageView=itemView.findViewById(R.id.imageView);
+            textViewDesc=itemView.findViewById(R.id.textViewShortDesc);
+            textViewPrice=itemView.findViewById(R.id.textViewPrice);
+            textViewRating=itemView.findViewById(R.id.textViewRating);
+            textViewTitle=itemView.findViewById(R.id.textViewTitle);
+            relativeLayout=itemView.findViewById(R.id.relative_layout);
+        }
+
+			
+		---------------------------------------------------------
+then public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+
+so that customised method are extended
+
+Filtering logic for Base adapter
+==============================================
+//filter Logic
+ public void filter(String query){
+        ArrayList<Book> arrayList=new ArrayList<>();
+        for(Book book:bookList){
+            if(book.getName().toLowerCase().contains((query.toLowerCase()))){
+                arrayList.add(book);
+            }
+        }
+        bookAdapter.filterList(arrayList);
+    }
+
+//update Arraylist
+ public  void filterList(List<Book> filteredList){
+
+        bookList=filteredList;
+        notifyDataSetChanged();
+    }
+
+
+//UP BUTTON
+ getSupportActionBar().setTitle("Image Uploader");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+android manifest
+ <activity android:name=".ImageUpload" android:parentActivityName=".MainActivity">
+
+
+//SELECT IMAGE FROM GALLERY AND SHOW IT TO CURRENT SCREEN
+ 			********************
+ImageView imageView=findViewById(R.id.profilePic);
+
+ //ON CLICK IMAGE VIEW
+        userProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
+
+//CHOOSE IMAGE FROM GALLERY and set it to image View
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select an imagefile"), PICK_IMAGE_REQUEST);  //it will call onActivityResult()
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                userProfile.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }

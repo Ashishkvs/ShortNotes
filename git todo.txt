@@ -1,0 +1,31 @@
+GIT COMMAND
+===============
+git init
+git add .*
+git commit -m "message"
+
+//one time configuration
+git config --global user.name "ashish"
+git config --global user.email "ashish.kumar@datazi.com"
+git remote add origin https://github.com/abcd
+git push --set-upstream origin master
+
+git push -u origin master
+
+//to add all chanages only
+git add -A   git commit -all
+
+//…or push an existing repository from the command line
+git remote add origin https://github.com/Ashishkvs/Android_note_app.git
+git push -u origin master
+
+GIT BRANCH
+============
+//to see current branch
+git brnach
+
+//to create branch 
+git branch <branch_name>
+
+//to chekout branch
+git checkout <branch_name>
