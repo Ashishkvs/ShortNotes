@@ -1,0 +1,3 @@
+ <a [routerLink]="['/shop/product', product?.title?.replace(' ', '-')]"[queryParams]="{id:product?.id}">
+        <span class="product-title">{{ product?.title | titlecase }}</span>
+  </a>
