@@ -1,3 +1,32 @@
  <a [routerLink]="['/shop/product', product?.title?.replace(' ', '-')]"[queryParams]="{id:product?.id}">
         <span class="product-title">{{ product?.title | titlecase }}</span>
   </a>
+
+router with id
+-----------------------
+ { path: 'detail/:id', component: HeroDetailComponent },
+
+const id = Number(this.route.snapshot.paramMap.get('id'));
+  this.heroService.getHero(id)
+    .subscribe(hero => this.hero = hero);
+
+const hero = HEROES.find(h => h.id === id)!;
+
+goBack(): void {
+  this.location.back();
+}
+
+
+<a *ngFor="let hero of heroes"
+  routerLink="/detail/{{hero.id}}">
+  {{hero.name}}
+</a>
+--------------
+<ul class="heroes">
+  <li *ngFor="let hero of heroes">
+    <button type="button" (click)="onSelect(hero)" [class.selected]="hero === selectedHero">
+      <span class="badge">{{hero.id}}</span>
+      <span class="name">{{hero.name}}</span>
+    </button>
+  </li>
+</ul>
