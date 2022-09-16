@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+
+    stages {
+  
+        stage('SSH Connection') {
+            steps {
+                echo "Connect bigrock server via ssh"
+                sshagent(['docker-ssh']) {
+                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 whoami'
+                } 
+            }
+          
+        }
+         stage('Server Task') {
+            steps {
+                echo 'Checking Docker status....'
+                 sshagent(['docker-ssh']) {
+                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 free'
+                } 
+            }
+
+        }
+          stage('Docker Status') {
+            steps {
+                echo 'Checking Docker status....'
+                 sshagent(['docker-ssh']) {
+                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 docker ps -a'
+                } 
+            }
+
+        }
+       
+    }
+}
