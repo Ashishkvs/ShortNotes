@@ -3,34 +3,58 @@ pipeline {
 
 
     stages {
-  
-        stage('SSH Connection') {
+        stage('Checkout') {
+            steps {
+                // Get some code from a GitHub repository
+                git branch: 'master', credentialsId: 'eb249103-b181-406d-a45c-7f10b9156cde', url: 'https://github.com/Ashishkvs/UserSystem-Ecommerce.git'
+
+            }
+
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building Java application"
+                bat "gradlew  -Pbigrock clean build"
+
+            }
+          
+        }
+          stage('Test') {
+            steps {
+                bat './gradlew check'
+            }
+              post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    //junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'build/libs/*.jar'
+                }
+                // always{
+                //      junit 'build/reports/**/*.xml'
+                // }
+                
+            }
+
+        }
+         stage('SSH Connection') {
             steps {
                 echo "Connect bigrock server via ssh"
                 sshagent(['docker-ssh']) {
-                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 whoami'
+                     sh 'StrictHostKeyChecking=no  scp -r C:/ProgramData/Jenkins/.jenkins/workspace/user-account/build/libs/*.jar root@162.241.124.208:/usr/dev-test'
                 } 
             }
           
         }
-         stage('Server Task') {
+        stage('SSH Deploy') {
             steps {
-                echo 'Checking Docker status....'
-                 sshagent(['docker-ssh']) {
-                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 free'
+                echo "Deploying user-service-api"
+                sshagent(['docker-ssh']) {
+                    
                 } 
             }
-
+          
         }
-          stage('Docker Status') {
-            steps {
-                echo 'Checking Docker status....'
-                 sshagent(['docker-ssh']) {
-                     sh 'ssh -o StrictHostKeyChecking=no -l root 162.941.924.208 docker ps -a'
-                } 
-            }
-
-        }
-       
     }
 }
